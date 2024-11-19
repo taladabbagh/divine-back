@@ -19,7 +19,7 @@ public class Category {
     @Column(name = "name", nullable = false, length = 100)
     private String name;
 
-    @OneToMany(mappedBy = "parentCategory", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "Category", cascade = CascadeType.ALL)
     private List<SubCategory> subCategories;
 
     // Getters and Setters

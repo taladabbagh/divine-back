@@ -21,7 +21,7 @@ public class SubCategory {
 
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
-    private Category parentCategory;
+    private Category Category;
 
     @OneToMany(mappedBy = "subCategory", cascade = CascadeType.ALL)
     private List<Product> products;
@@ -43,12 +43,12 @@ public class SubCategory {
         this.name = name;
     }
 
-    public Category getParentCategory() {
-        return parentCategory;
+    public Category getCategory() {
+        return Category;
     }
 
-    public void setParentCategory(Category parentCategory) {
-        this.parentCategory = parentCategory;
+    public void setCategory(Category Category) {
+        this.Category = Category;
     }
 
     public List<Product> getProducts() {
