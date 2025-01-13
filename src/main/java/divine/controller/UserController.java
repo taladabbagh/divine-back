@@ -4,6 +4,7 @@ import divine.dto.SignupDTO;
 import divine.dto.UserDTO;
 import divine.model.User;
 import divine.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,41 +27,60 @@ public class UserController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<User> getCurrentUser() {
+    public ResponseEntity<UserDTO> getCurrentUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = auth.getName();
-        User userDetails = userService.loadUserByUsername(username);
+        String email = auth.getName(); // Authenticated email
+        User userDetails = userService.loadUserByEmail(email);
         if (userDetails == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(userDetails);
+
+        // Map User to UserDTO
+        UserDTO userDTO = new UserDTO();
+        userDTO.setEmail(userDetails.getEmail());
+        userDTO.setFirstName(userDetails.getFirstName());
+        userDTO.setLastName(userDetails.getLastName());
+
+        return ResponseEntity.ok(userDTO);
     }
 
     @PutMapping("/me")
-    public ResponseEntity<User> updateCurrentUser(@RequestBody UserDTO userDTO) {
+    public ResponseEntity<UserDTO> updateCurrentUser(@RequestBody UserDTO userDTO) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = auth.getName();
-        User savedUser = userService.loadUserByUsername(username);
+        String email = auth.getName(); // Authenticated email
+        User savedUser = userService.loadUserByEmail(email);
         if (savedUser == null) {
             return ResponseEntity.notFound().build();
         }
 
-        savedUser.setUsername(userDTO.getUsername());
-        savedUser.setEmail(userDTO.getEmail());
+        // Update user details
         savedUser.setFirstName(userDTO.getFirstName());
         savedUser.setLastName(userDTO.getLastName());
-        String password = userDTO.getPassword();
-        if (password != null) {
-            savedUser.setPassword(passwordEncoder.encode(password));
+        if (userDTO.getPassword() != null && !userDTO.getPassword().isEmpty()) {
+            savedUser.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         }
 
         userService.save(savedUser);
-        return ResponseEntity.ok(savedUser);
+
+        // Map updated User to UserDTO
+        UserDTO updatedUserDTO = new UserDTO();
+        updatedUserDTO.setEmail(savedUser.getEmail());
+        updatedUserDTO.setFirstName(savedUser.getFirstName());
+        updatedUserDTO.setLastName(savedUser.getLastName());
+
+        return ResponseEntity.ok(updatedUserDTO);
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<User> signup(@RequestBody SignupDTO signupDTO) {
-        User user = userService.create(signupDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(user);
+    public ResponseEntity<UserDTO> signup(@Valid @RequestBody SignupDTO signupDTO) {
+        User newUser = userService.create(signupDTO);
+
+        // Map new User to UserDTO
+        UserDTO userDTO = new UserDTO();
+        userDTO.setEmail(newUser.getEmail());
+        userDTO.setFirstName(newUser.getFirstName());
+        userDTO.setLastName(newUser.getLastName());
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(userDTO);
     }
 }

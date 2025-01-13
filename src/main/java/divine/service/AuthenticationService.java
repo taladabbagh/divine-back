@@ -18,9 +18,9 @@ public class AuthenticationService {
     }
 
     public Authentication authenticate(AuthenticationDTO request) {
-        String username = request.getUsername();
+        String email = request.getEmail();
         String password = request.getPassword();
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, password);
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, password);
         return authenticationManager.authenticate(authenticationToken);
     }
 }

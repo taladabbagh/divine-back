@@ -1,5 +1,6 @@
 package divine.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -9,6 +10,7 @@ import java.util.List;
 @Entity
 @Table(name = "sub_category")
 public class SubCategory {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "sub_category_id", nullable = false)
@@ -21,7 +23,8 @@ public class SubCategory {
 
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
-    private Category Category;
+    @JsonBackReference
+    private Category category;
 
     @OneToMany(mappedBy = "subCategory", cascade = CascadeType.ALL)
     private List<Product> products;
@@ -44,11 +47,11 @@ public class SubCategory {
     }
 
     public Category getCategory() {
-        return Category;
+        return category;
     }
 
-    public void setCategory(Category Category) {
-        this.Category = Category;
+    public void setCategory(Category category) {
+        this.category = category;
     }
 
     public List<Product> getProducts() {

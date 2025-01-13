@@ -17,20 +17,20 @@ public class AuthController {
 
     private final JWTService jwtService;
     private final AuthenticationService authenticationService;
-    private final UserService userService;
+//    private final UserService userService;
 
     @Autowired
     public AuthController(JWTService jwtService, AuthenticationService authenticationService, UserService userService) {
         this.jwtService = jwtService;
         this.authenticationService = authenticationService;
-        this.userService = userService;
+//        this.userService = userService;
     }
 
+    @CrossOrigin
     @PostMapping("/login")
     public String login(@RequestBody AuthenticationDTO requestBody) {
         Authentication authentication = authenticationService.authenticate(requestBody);
         if (authentication.isAuthenticated()) {
-            userService.updateLastLoginTime(authentication.getName(), Instant.now());
             return jwtService.generateToken(authentication);
         } else {
             throw new BadCredentialsException("Bad credentials");

@@ -30,7 +30,6 @@ public class Order {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> orderItems;
 
-    // Getters and Setters
     public Integer getId() {
         return id;
     }

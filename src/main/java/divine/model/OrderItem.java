@@ -29,7 +29,6 @@ public class OrderItem {
     @Column(name = "price", nullable = false)
     private BigDecimal price;
 
-    // Getters and Setters
     public Integer getId() {
         return id;
     }

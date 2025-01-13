@@ -3,15 +3,10 @@ package divine.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
 
@@ -23,13 +18,9 @@ public class User implements UserDetails {
     @Column(name = "user_id", nullable = false)
     private Integer id;
 
-    @NotBlank
-    @Column(name = "username", nullable = false, length = 50)
-    private String username;
-
     @NotNull
     @Email
-    @Column(name = "email", nullable = false, length = 50)
+    @Column(name = "email", nullable = false, length = 50, unique = true)
     private String email;
 
     @NotNull
@@ -44,39 +35,13 @@ public class User implements UserDetails {
     @Column(name = "password", nullable = false, length = 72)
     private String password;
 
-    @NotNull
-    @Column(name = "is_enabled", nullable = false)
-    private Boolean isEnabled = true;
-
-    @NotNull
-    @Column(name = "is_verified", nullable = false)
-    private Boolean isVerified = false;
-
-    @Column(name = "last_login")
-    private Instant lastLogin;
-
-    @CreationTimestamp
-    @Column(name = "created_at", nullable = false)
-    private Instant createdAt;
-
-    @UpdateTimestamp
-    @Column(name = "updated_at", nullable = false)
-    private Instant updatedAt;
-
+    // Getters and Setters
     public Integer getId() {
         return id;
     }
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     public String getEmail() {
@@ -111,74 +76,39 @@ public class User implements UserDetails {
         this.password = password;
     }
 
-    public Boolean getIsEnabled() {
-        return isEnabled;
-    }
-
-    public void setIsEnabled(Boolean isEnabled) {
-        this.isEnabled = isEnabled;
-    }
-
-    public Boolean getIsVerified() {
-        return isVerified;
-    }
-
-    public void setIsVerified(Boolean isVerified) {
-        this.isVerified = isVerified;
-    }
-
-    public Instant getLastLogin() {
-        return lastLogin;
-    }
-
-    public void setLastLogin(Instant lastLogin) {
-        this.lastLogin = lastLogin;
-    }
-
-    public Instant getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Instant createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public Instant getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(Instant updatedAt) {
-        this.updatedAt = updatedAt;
+    @JsonIgnore
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(); // Return an empty list for now
     }
 
     @JsonIgnore
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        // Removed roles as per your request, but kept a placeholder if needed.
-        return List.of();
+    public String getUsername() {
+        return email;
     }
 
     @JsonIgnore
     @Override
     public boolean isAccountNonExpired() {
-        return true;
+        return true; // Default to true
     }
 
     @JsonIgnore
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return true; // Default to true
     }
 
     @JsonIgnore
     @Override
     public boolean isCredentialsNonExpired() {
-        return true;
+        return true; // Default to true
     }
 
     @JsonIgnore
     @Override
     public boolean isEnabled() {
-        return getIsEnabled();
+        return true; // Default to true
     }
 }

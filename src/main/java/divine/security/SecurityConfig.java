@@ -52,17 +52,16 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/auth/login", "/signup").permitAll();
+                    auth.requestMatchers("/categories", "/categories/**", "subcategories/**").permitAll();
+                    auth.requestMatchers("/subcategories", "").permitAll();
 
-                    auth.requestMatchers("/user/add-admin").hasAuthority("SUPER_ADMIN");
-                    auth.requestMatchers("/user/filter").hasAuthority("ADMIN");
-                    auth.requestMatchers(HttpMethod.DELETE, "/user/**").hasAuthority("ADMIN");
+
+//                    auth.requestMatchers("/user/add-admin").hasAuthority("SUPER_ADMIN");
+//                    auth.requestMatchers("/user/filter").hasAuthority("ADMIN");
+//                    auth.requestMatchers(HttpMethod.DELETE, "/user/**").hasAuthority("ADMIN");
 
                     auth.requestMatchers(HttpMethod.GET, "/listing/**").permitAll();
 
-                    auth.requestMatchers(HttpMethod.GET, "/car/**").permitAll();
-                    auth.requestMatchers(HttpMethod.POST, "/car/**").hasAuthority("ADMIN");
-                    auth.requestMatchers(HttpMethod.DELETE, "/car/**").hasAuthority("ADMIN");
-                    auth.requestMatchers(HttpMethod.PUT, "/car/**").hasAuthority("ADMIN");
 
                     auth.anyRequest().authenticated();
                 })
