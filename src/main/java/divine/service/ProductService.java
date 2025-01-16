@@ -1,60 +1,74 @@
 package divine.service;
 
+import divine.dto.ProductDTO;
 import divine.model.Product;
+import divine.model.SubCategory;
 import divine.repository.ProductRepository;
+import divine.repository.SubCategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Optional;
-
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
 
+    private final ProductRepository productRepository;
+    private final SubCategoryRepository subCategoryRepository;
+
     @Autowired
-    private ProductRepository productRepository;
-
-    private static final String IMAGE_UPLOAD_DIR = "uploads/product-images/";
-
-    public Product createProduct(Product product) {
-        return productRepository.save(product);
+    public ProductService(ProductRepository productRepository, SubCategoryRepository subCategoryRepository) {
+        this.productRepository = productRepository;
+        this.subCategoryRepository = subCategoryRepository;
     }
 
-    public Product updateProduct(Integer productId, Product productDetails) {
-        Optional<Product> existingProduct = productRepository.findById(productId);
-        if (existingProduct.isPresent()) {
-            Product product = existingProduct.get();
-            product.setName(productDetails.getName());
-            product.setDescription(productDetails.getDescription());
-            product.setPrice(productDetails.getPrice());
-            product.setQuantity(productDetails.getQuantity());
-            product.setSubCategory(productDetails.getSubCategory());
-            return productRepository.save(product);
+    // Fetch all products
+    public List<ProductDTO> getAllProducts() {
+        return productRepository.findAll().stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    // Fetch a product by ID
+    public ProductDTO getProductById(Integer id) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+        return convertToDTO(product);
+    }
+
+    // Fetch products by SubCategory ID
+    public List<ProductDTO> getProductsBySubCategory(Integer subCategoryId) {
+        List<Product> products = productRepository.findBySubCategoryId(subCategoryId);
+
+        // Convert products to ProductDTOs and return
+        return products.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    // Create or update a product
+    public ProductDTO saveOrUpdateProduct(ProductDTO productDTO) {
+        SubCategory subCategory = subCategoryRepository.findById(productDTO.getSubCategoryId())
+                .orElseThrow(() -> new RuntimeException("SubCategory not found"));
+        Product product = convertToEntity(productDTO, subCategory);
+        Product savedProduct = productRepository.save(product);
+        return convertToDTO(savedProduct);
+    }
+
+    // Delete a product by ID
+    public void deleteProduct(Integer id) {
+        if (!productRepository.existsById(id)) {
+            throw new RuntimeException("Product not found");
         }
-        return null;
+        productRepository.deleteById(id);
     }
 
-    public void deleteProduct(Integer productId) {
-        productRepository.deleteById(productId);
-    }
-
-    public Product getProductById(Integer productId) {
-        return productRepository.findById(productId).orElse(null);
-    }
-
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
-    }
-
-    public List<Product> getProductsBySubCategory(Integer subCategoryId) {
-        return productRepository.findBySubCategoryId(subCategoryId);
-    }
-
+    // Upload product image
     public void uploadProductImage(Integer productId, MultipartFile image) throws IOException {
         Optional<Product> productOptional = productRepository.findById(productId);
 
@@ -62,7 +76,7 @@ public class ProductService {
             Product product = productOptional.get();
 
             // Ensure the directory exists
-            File uploadDir = new File(IMAGE_UPLOAD_DIR);
+            File uploadDir = new File("uploads/product-images/");
             if (!uploadDir.exists()) {
                 uploadDir.mkdirs();
             }
@@ -79,5 +93,29 @@ public class ProductService {
         } else {
             throw new IllegalArgumentException("Product not found with ID: " + productId);
         }
+    }
+
+    // Convert Product entity to ProductDTO
+    private ProductDTO convertToDTO(Product product) {
+        ProductDTO dto = new ProductDTO();
+        dto.setId(product.getId());
+        dto.setName(product.getName());
+        dto.setDescription(product.getDescription());
+        dto.setPrice(product.getPrice());
+        dto.setQuantity(product.getQuantity());
+        dto.setSubCategoryId(product.getSubCategory().getId());
+        dto.setImageUrl(product.getImageUrl());
+        return dto;
+    }
+
+    // Convert ProductDTO to Product entity
+    private Product convertToEntity(ProductDTO productDTO, SubCategory subCategory) {
+        Product product = new Product();
+        product.setName(productDTO.getName());
+        product.setDescription(productDTO.getDescription());
+        product.setPrice(productDTO.getPrice());
+        product.setQuantity(productDTO.getQuantity());
+        product.setSubCategory(subCategory);
+        return product;
     }
 }

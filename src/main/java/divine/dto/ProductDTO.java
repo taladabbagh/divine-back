@@ -12,22 +12,22 @@ public class ProductDTO {
 
     private Integer id;
 
-    @NotBlank(message = "Product name is required.")
+    @NotBlank(message = "Name is required")
     private String name;
 
     private String description;
 
-    @NotNull(message = "Price is required.")
-    @DecimalMin(value = "0.00", inclusive = true, message = "Price must be positive or zero.")
-    @Digits(integer = 10, fraction = 2, message = "Price must have up to 10 digits before the decimal and 2 digits after.")
+    @NotNull(message = "Price is required")
+    @DecimalMin(value = "0.0", inclusive = false, message = "Price must be greater than 0")
     private BigDecimal price;
 
-    @NotNull(message = "Quantity is required.")
-    @Min(value = 0, message = "Quantity must be 0 or greater.")
+    @Min(value = 0, message = "Quantity must be at least 0")
     private Integer quantity;
 
-    @NotNull(message = "Subcategory ID is required.")
+    @NotNull
     private Integer subCategoryId;
+
+    private String imageUrl;
 
     // Getters and Setters
 
@@ -77,5 +77,13 @@ public class ProductDTO {
 
     public void setSubCategoryId(Integer subCategoryId) {
         this.subCategoryId = subCategoryId;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

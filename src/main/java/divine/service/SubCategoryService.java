@@ -76,4 +76,12 @@ public class SubCategoryService {
 
         return subCategory;
     }
+
+    public List<SubCategoryDTO> getSubCategoriesByCategoryId(Integer categoryId) {
+        List<SubCategory> subCategories = subCategoryRepository.findByCategoryId(categoryId);
+        return subCategories.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
 }

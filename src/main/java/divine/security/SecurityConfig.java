@@ -17,6 +17,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import java.util.List;
+
 @Configuration
 public class SecurityConfig {
     private final UserService userService;
@@ -49,19 +51,20 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
+                .cors(cors -> cors.configurationSource(request -> {
+                    var corsConfig = new org.springframework.web.cors.CorsConfiguration();
+                    corsConfig.setAllowedOrigins(List.of("http://localhost:5173")); // Add your frontend origin
+                    corsConfig.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                    corsConfig.setAllowedHeaders(List.of("*"));
+                    corsConfig.setAllowCredentials(true);
+                    return corsConfig;
+                }))
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/auth/login", "/signup").permitAll();
                     auth.requestMatchers("/categories", "/categories/**", "subcategories/**").permitAll();
-                    auth.requestMatchers("/subcategories", "").permitAll();
-
-
-//                    auth.requestMatchers("/user/add-admin").hasAuthority("SUPER_ADMIN");
-//                    auth.requestMatchers("/user/filter").hasAuthority("ADMIN");
-//                    auth.requestMatchers(HttpMethod.DELETE, "/user/**").hasAuthority("ADMIN");
-
-                    auth.requestMatchers(HttpMethod.GET, "/listing/**").permitAll();
-
+                    auth.requestMatchers("/subcategories", "api/products/subcategory/").permitAll();
+                    auth.requestMatchers("/api/products", "api/**").permitAll();
 
                     auth.anyRequest().authenticated();
                 })
@@ -70,4 +73,5 @@ public class SecurityConfig {
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
+
 }

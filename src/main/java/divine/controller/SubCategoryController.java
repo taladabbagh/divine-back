@@ -51,4 +51,10 @@ public class SubCategoryController {
         subCategoryService.deleteSubCategory(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/category/{categoryId}")
+    public ResponseEntity<List<SubCategoryDTO>> getSubCategoriesByCategoryId(@PathVariable Integer categoryId) {
+        List<SubCategoryDTO> subCategories = subCategoryService.getSubCategoriesByCategoryId(categoryId);
+        return ResponseEntity.ok(subCategories);
+    }
 }

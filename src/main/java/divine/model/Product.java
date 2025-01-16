@@ -35,6 +35,7 @@ public class Product {
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
 
+    @NotNull(message = "Sub-Category id can't be null")
     @ManyToOne
     @JoinColumn(name = "sub_category_id", nullable = false)
     private SubCategory subCategory;
@@ -45,11 +46,11 @@ public class Product {
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
-    private Instant createdAt;
+    private Instant createdAt = Instant.now();
 
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
-    private Instant updatedAt;
+    private Instant updatedAt = Instant.now();
 
     public Integer getId() {
         return id;
