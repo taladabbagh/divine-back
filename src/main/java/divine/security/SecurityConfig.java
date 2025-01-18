@@ -65,7 +65,9 @@ public class SecurityConfig {
                     auth.requestMatchers("/categories", "/categories/**", "subcategories/**").permitAll();
                     auth.requestMatchers("/subcategories", "api/products/subcategory/").permitAll();
                     auth.requestMatchers("/api/products", "api/**").permitAll();
+                    auth.requestMatchers("/cart", "cart/**").permitAll();
 
+                    auth.requestMatchers("/**").permitAll();
                     auth.anyRequest().authenticated();
                 })
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
