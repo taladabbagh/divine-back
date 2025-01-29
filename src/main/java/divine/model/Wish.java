@@ -2,22 +2,23 @@ package divine.model;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "wishlist")
-public class Wishlist {
+public class Wish {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "wishlist_id", nullable = false)
+    @Column(name = "wish_id", nullable = false)
     private Integer id;
 
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @OneToMany(mappedBy = "wishlist", cascade = CascadeType.ALL)
-    private List<WishlistItem> wishlistItems;
+    @OneToMany(mappedBy = "wish", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<WishItem> wishItems = new ArrayList<>();
 
     // Getters and Setters
     public Integer getId() {
@@ -36,11 +37,11 @@ public class Wishlist {
         this.user = user;
     }
 
-    public List<WishlistItem> getWishlistItems() {
-        return wishlistItems;
+    public List<WishItem> getWishItems() {
+        return wishItems;
     }
 
-    public void setWishlistItems(List<WishlistItem> wishlistItems) {
-        this.wishlistItems = wishlistItems;
+    public void setWishItems(List<WishItem> wishItems) {
+        this.wishItems = wishItems;
     }
 }

@@ -1,6 +1,7 @@
 package divine.controller;
 
 import divine.dto.CategoryDTO;
+import divine.dto.ProductDTO;
 import divine.service.CategoryService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,5 +52,11 @@ public class CategoryController {
     public ResponseEntity<Void> deleteCategory(@PathVariable Integer id) {
         categoryService.deleteCategory(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{id}/products")
+    public ResponseEntity<List<ProductDTO>> getProductsByCategoryId(@PathVariable Integer id) {
+        List<ProductDTO> products = categoryService.getProductsByCategoryId(id);
+        return ResponseEntity.ok(products);
     }
 }

@@ -1,18 +1,21 @@
 package divine.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "wishlist_item")
-public class WishlistItem {
+public class WishItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "wishlist_item_id", nullable = false)
+    @Column(name = "wish_item_id", nullable = false)
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "wishlist_id", nullable = false)
-    private Wishlist wishlist;
+    @JoinColumn(name = "wish_id", nullable = false)
+    private Wish wish;
 
     @ManyToOne
     @JoinColumn(name = "product_id", nullable = false)
@@ -27,12 +30,12 @@ public class WishlistItem {
         this.id = id;
     }
 
-    public Wishlist getWishlist() {
-        return wishlist;
+    public Wish getWish() {
+        return wish;
     }
 
-    public void setWishlist(Wishlist wishlist) {
-        this.wishlist = wishlist;
+    public void setWish(Wish wish) {
+        this.wish = wish;
     }
 
     public Product getProduct() {
@@ -42,4 +45,5 @@ public class WishlistItem {
     public void setProduct(Product product) {
         this.product = product;
     }
+
 }

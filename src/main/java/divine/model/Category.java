@@ -22,7 +22,6 @@ public class Category {
     @Column(name = "name", nullable = false, length = 100)
     private String name;
 
-    //    @JsonProperty("gender")
     @Column(name = "gender", length = 100)
     private String gender;
 

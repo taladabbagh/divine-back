@@ -1,9 +1,12 @@
 package divine.dto;
 
-public class WishlistItemDTO {
+import java.math.BigDecimal;
+
+public class WishItemDTO {
     private Integer id;
-    private Integer wishlistId;
+    //    private Integer wishId;
     private Integer productId;
+//    private BigDecimal price;
 
     // Getters and setters
 
@@ -13,14 +16,6 @@ public class WishlistItemDTO {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public Integer getWishlistId() {
-        return wishlistId;
-    }
-
-    public void setWishlistId(Integer wishlistId) {
-        this.wishlistId = wishlistId;
     }
 
     public Integer getProductId() {

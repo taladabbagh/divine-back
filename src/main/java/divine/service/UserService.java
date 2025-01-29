@@ -52,6 +52,12 @@ public class UserService implements UserDetailsService {
                 new UsernameNotFoundException("User with email '" + email + "' not found"));
     }
 
+    // Load user by ID
+    public User loadUserById(Long id) {
+        return userRepository.findById(Math.toIntExact(id)).orElseThrow(() ->
+                new UsernameNotFoundException("User with ID '" + id + "' not found"));
+    }
+
     public User save(User user) {
         return userRepository.save(user);
     }

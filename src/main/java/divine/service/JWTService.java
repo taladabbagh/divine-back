@@ -4,7 +4,6 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
@@ -12,32 +11,36 @@ import java.util.Date;
 
 @Service
 public class JWTService {
-    private static final String SECRET = "53ebec311d355fb644065ec2e50ff80939781562aeb2e1f39825398575c8a302";
-    private static final Key KEY = Keys.hmacShaKeyFor(SECRET.getBytes());
+    private static final String SECRET = "a_secure_secret_key_of_your_choice";
+    private static final Key SIGNING_KEY = Keys.hmacShaKeyFor(SECRET.getBytes());
     private static final long TOKEN_EXPIRATION_TIME = 24 * 60 * 60 * 1000L; // 24 hours
 
-    public String generateToken(Authentication authentication) {
+    public String generateToken(String userId, String email) {
         return Jwts.builder()
-                .setSubject(authentication.getName())
+                .setSubject(userId)
+                .claim("email", email)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + TOKEN_EXPIRATION_TIME))
-                .signWith(KEY, SignatureAlgorithm.HS256)
+                .signWith(SIGNING_KEY, SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    public boolean isValidToken(String token, String username) {
-        Claims body = getClaimsFromToken(token);
-        String tokenUsername = body.getSubject();
-        boolean notExpired = body.getExpiration().after(new Date());
-        return username.equals(tokenUsername) && notExpired;
+    public boolean isValidToken(String token, String userId) {
+        Claims claims = parseToken(token);
+        return claims.getSubject().equals(userId) && claims.getExpiration().after(new Date());
     }
 
-    public String getUsernameFromToken(String token) {
-        return getClaimsFromToken(token).getSubject();
+    public String getUserIdFromToken(String token) {
+        return parseToken(token).getSubject();
     }
 
-    private Claims getClaimsFromToken(String token) {
-        return Jwts.parserBuilder().setSigningKey(KEY)
+    public String getEmailFromToken(String token) {
+        return (String) parseToken(token).get("email");
+    }
+
+    private Claims parseToken(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(SIGNING_KEY)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();

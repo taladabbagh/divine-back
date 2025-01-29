@@ -2,10 +2,10 @@ package divine.dto;
 
 import java.util.List;
 
-public class WishlistDTO {
+public class WishDTO {
     private Integer id;
     private Integer userId;
-    private List<WishlistItemDTO> wishlistItems;
+    private List<WishItemDTO> wishItems;
 
     // Getters and setters
 
@@ -25,11 +25,11 @@ public class WishlistDTO {
         this.userId = userId;
     }
 
-    public List<WishlistItemDTO> getWishlistItems() {
-        return wishlistItems;
+    public List<WishItemDTO> getWishItems() {
+        return wishItems;
     }
 
-    public void setWishlistItems(List<WishlistItemDTO> wishlistItems) {
-        this.wishlistItems = wishlistItems;
+    public void setWishItems(List<WishItemDTO> wishItems) {
+        this.wishItems = wishItems;
     }
 }

@@ -50,7 +50,7 @@ public class CartService {
                 .findFirst()
                 .orElseGet(() -> createNewCartItem(cart, product));
 
-        cartItem.setQuantity(cartItem.getQuantity() + cartItemDTO.getQuantity());
+        cartItem.setQuantity(cartItem.getQuantity() + 1);
         cartItem.setPrice(product.getPrice().multiply(BigDecimal.valueOf(cartItem.getQuantity())));
 
         cartRepository.save(cart);

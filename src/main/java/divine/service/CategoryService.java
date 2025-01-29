@@ -1,8 +1,10 @@
 package divine.service;
 
 import divine.dto.CategoryDTO;
+import divine.dto.ProductDTO;
 import divine.dto.SubCategoryDTO;
 import divine.model.Category;
+import divine.model.Product;
 import divine.model.SubCategory;
 import divine.repository.CategoryRepository;
 import divine.repository.SubCategoryRepository;
@@ -101,5 +103,27 @@ public class CategoryService {
         subCategory.setId(subCategoryDTO.getId());
         subCategory.setName(subCategoryDTO.getName());
         return subCategory;
+    }
+
+    public List<ProductDTO> getProductsByCategoryId(Integer id) {
+        // Find the category by ID, or throw an exception if not found
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Category not found"));
+
+        // Stream through subcategories and collect all products
+        return category.getSubCategories().stream()
+                .flatMap(subCategory -> subCategory.getProducts().stream()) // Flatten the product streams
+                .map(this::convertProductToDTO) // Convert to ProductDTO
+                .collect(Collectors.toList());
+    }
+
+    private ProductDTO convertProductToDTO(Product product) {
+        ProductDTO productDTO = new ProductDTO();
+        productDTO.setId(product.getId());
+        productDTO.setName(product.getName());
+        productDTO.setDescription(product.getDescription());
+        productDTO.setPrice(product.getPrice());
+        productDTO.setQuantity(product.getQuantity());
+        return productDTO;
     }
 }
