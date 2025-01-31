@@ -124,6 +124,22 @@ public class CategoryService {
         productDTO.setDescription(product.getDescription());
         productDTO.setPrice(product.getPrice());
         productDTO.setQuantity(product.getQuantity());
+        productDTO.setImageUrl(product.getImageUrl());
+
         return productDTO;
     }
+
+    public List<CategoryDTO> getCategoriesByGender(String gender) {
+        return categoryRepository.findByGender(gender).stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    public List<CategoryDTO> getCategoriesWithoutGender() {
+        return categoryRepository.findCategoriesWithoutGender().stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+
 }

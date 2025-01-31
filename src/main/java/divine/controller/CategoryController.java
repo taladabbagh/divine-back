@@ -59,4 +59,17 @@ public class CategoryController {
         List<ProductDTO> products = categoryService.getProductsByCategoryId(id);
         return ResponseEntity.ok(products);
     }
+
+    @GetMapping("/gender/{gender}")
+    public ResponseEntity<List<CategoryDTO>> getCategoriesByGender(@PathVariable String gender) {
+        List<CategoryDTO> categories = categoryService.getCategoriesByGender(gender);
+        return ResponseEntity.ok(categories);
+    }
+
+    @GetMapping("/without-gender")
+    public ResponseEntity<List<CategoryDTO>> getCategoriesWithoutGender() {
+        List<CategoryDTO> categories = categoryService.getCategoriesWithoutGender();
+        return ResponseEntity.ok(categories);
+    }
+
 }

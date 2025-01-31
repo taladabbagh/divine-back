@@ -116,6 +116,8 @@ public class ProductService {
         product.setPrice(productDTO.getPrice());
         product.setQuantity(productDTO.getQuantity());
         product.setSubCategory(subCategory);
+        product.setImageUrl(productDTO.getImageUrl());
         return product;
     }
+
 }
