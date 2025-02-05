@@ -120,4 +120,10 @@ public class ProductService {
         return product;
     }
 
+    public Integer getSubCategoryIdByProductId(Integer productId) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+        return product.getSubCategory().getId();
+    }
+
 }

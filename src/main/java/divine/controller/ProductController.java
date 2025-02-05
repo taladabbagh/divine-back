@@ -83,4 +83,11 @@ public class ProductController {
             return ResponseEntity.internalServerError().body("An unexpected error occurred: " + e.getMessage());
         }
     }
+
+    @GetMapping("/{id}/subcategory-id")
+    public ResponseEntity<Integer> getSubCategoryId(@PathVariable Integer id) {
+        Integer subCategoryId = productService.getSubCategoryIdByProductId(id);
+        return ResponseEntity.ok(subCategoryId);
+    }
+
 }
